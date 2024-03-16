@@ -75,11 +75,18 @@ class HBNBCommand(cmd.Cmd):
             return
     
         new_obj = self.Classes_dict[class_name]()
-
-        if len(cmd_args) > 0:
-            for x in cmd_args:
-                key, value = x.split("=")
-                setattr(new_obj, key.strip('"'), value.strip('"'))
+        for x in cmd_args:
+            key, value = x.split("=")
+            if hasattr(new_obj, key):
+                typeOfAttr = type(getattr(new_obj, key))
+                if typeOfAttr == int:
+                    setattr(new_obj, key.strip('"'), int(value.strip('"')))
+                elif typeOfAttr == float:
+                    setattr(new_obj, key.strip('"'), float(value.strip('"')))
+                elif typeOfAttr == str:
+                    if key == "name" and "_" in value:
+                        value = value.replace("_", " ")
+                    setattr(new_obj, key.strip('"'), value.strip('"'))
 
         new_obj.save()
         print("{}".format(new_obj.id))
