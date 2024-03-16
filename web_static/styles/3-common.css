@@ -1,0 +1,16 @@
+body{
+    margin: 0;
+    padding: 0;
+    color: #484848;
+    font-size: 14px;
+    font-family: Circular,"Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+.image-container {
+    background-image: url("../images/logo.png");
+    width: 142px;
+    height: 60px;
+    background-size: contain;
+    background-position: 20px center;
+    padding-left: 20px;
+    background-repeat: no-repeat;
+}
