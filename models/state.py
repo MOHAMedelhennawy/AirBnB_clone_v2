@@ -2,15 +2,22 @@
 """
 State class, a subclass of BaseModel
 """
-from models.base_model import BaseModel
+from models.base_model import BaseModel, Base
+from sqlalchemy import Column, Integer, String, ForeignKey
 
 
-class State(BaseModel):
+class State(BaseModel, Base):
     """
     A subclass of BaseModel class
 
     Public class attribute:
     name (str): state name
     """
+    __tablename__ = 'states'
+    name = Column(String(128), nullable=False)
 
-    name = ""
+    def __init__(self, name=""):
+        """
+        State Constructor
+        """
+        self.name = name

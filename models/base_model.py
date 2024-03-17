@@ -6,12 +6,20 @@ module that contain BaseModel
 from uuid import uuid4
 from datetime import datetime
 import models
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, Integer, String, DATETIME
+
+Base = declarative_base()
 
 
 class BaseModel:
     '''
     BaseModel that defines all common attributes/methods for other classes
     '''
+
+    id = Column(String(60), nullable=False, primary_key=True)
+    created_at = Column(DATETIME, nullable=False, default=datetime.utcnow())
+    updated_at = Column(DATETIME, nullable=False, default=datetime.utcnow())
 
     def __init__(self, *args, **kwargs):
         '''
@@ -22,7 +30,6 @@ class BaseModel:
             self.id = str(uuid4())
             self.created_at = datetime.now()
             self.updated_at = datetime.now()
-            models.storage.new(self)
         else:
             for key, value in kwargs.items():
                 if key != "__class__":
@@ -44,6 +51,7 @@ class BaseModel:
         '''
 
         self.updated_at = datetime.now()
+        models.storage.new(self)
         models.storage.save()
 
     def to_dict(self):
@@ -56,4 +64,12 @@ class BaseModel:
         instance_dict["__class__"] = self.__class__.__name__
         instance_dict["created_at"] = self.created_at.isoformat()
         instance_dict["updated_at"] = self.updated_at.isoformat()
+        if ("_sa_instance_state" in instance_dict):
+            del instance_dict["_sa_instance_state"]
         return instance_dict
+
+    def delete(self):
+        """
+        delete the current instance from the storage
+        """
+        models.storage.delete(self)
