@@ -18,6 +18,9 @@ class DBStorage:
     __session = None
 
     def __init__(self):
+        """
+        Public instance methods to create the engine
+        """
         user =  getenv("HBNB_MYSQL_USER")
         password = getenv("HBNB_MYSQL_PWD")
         host = getenv("HBNB_MYSQL_HOST")
@@ -30,4 +33,9 @@ class DBStorage:
             Base.metadata.drop_all(self.__engine)
     
     all(self, cls=None):
-        
+        """
+        """
+        self.__session = models.storage.all(cls)
+
+
+        # ___I think this is wrong file____

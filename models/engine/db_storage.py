@@ -31,9 +31,11 @@ class DBStorage:
         localhost = os.getenv("HBNB_MYSQL_HOST")
         db = os.getenv("HBNB_MYSQL_DB")
         env = os.getenv("HBNB_ENV")
-        en = 'mysql+mysqldb://{}:{}@{}/{}'.format(usr, password, localhost, db)
-        self.__engine = create_engine(en, pool_pre_ping=True)
-        # Base.metadata.create_all(engine)
+
+        engine = 'mysql+mysqldb://{}:{}@{}/{}'.format(usr, password, localhost, db)
+        self.__engine = create_engine(engine, pool_pre_ping=True)
+        Base.metadata.create_all(engine)
+
         Session = sessionmaker(bind=engine)
         self.__session = Session()
         if env == "test":
@@ -41,5 +43,31 @@ class DBStorage:
 
     def all(self, cls=None):
         """ Returns all objects depending on the class name"""
-        if cls:
+        Filtered_classes = {}
+        if cls is None:
+            
+            # _____This method is not finished yet._____ #
+            # _____This method is not finished yet._____ #
+            # _____This method is not finished yet._____ #
+
+    
+
+    def new(self, obj):
+        """
+        add the object to the current database session
+        """
+        self.__session.add(obj)
+    
+    def save(self):
+        """
+        commit all changes of the current database session
+        """
+        self.__session.commit()
+    
+    def delete(self, obj=None):
+        """
+        delete from the current database session obj if not None
+        """
+        if obj is not None:
+            self.__session.delete(obj)
 
