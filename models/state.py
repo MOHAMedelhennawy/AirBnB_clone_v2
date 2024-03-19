@@ -15,9 +15,19 @@ class State(BaseModel, Base):
     """
     __tablename__ = 'states'
     name = Column(String(128), nullable=False)
+    cities = relactionship("City", back_populates='state', cascade="all, delete, save-update")
 
     def __init__(self, name=""):
         """
         State Constructor
         """
         self.name = name
+
+    @property
+    def cities(self):
+        cities_list = []
+        all_cities = models.storage.all(City)
+        for city in all_cities.values():
+            if city.state_id = self.id:
+                cities_list.append(city)
+        return cities_list
