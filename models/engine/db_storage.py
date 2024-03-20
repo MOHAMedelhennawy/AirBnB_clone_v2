@@ -3,8 +3,9 @@
 module that contain engine DBStorage
 """
 import os
+import sqlalchemy
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import scoped_session, sessionmaker
 from base_model import Base, BaseModel
 from city import City
 from state import State
@@ -23,6 +24,14 @@ class DBStorage:
     """
     __engine = None
     __session = None
+    classes_list = {
+        "User": User,
+        "State": State,
+        "City": City,
+        "Amenity": Amenity,
+        "Place": Place,
+        "Review": Review
+    }
 
     def __init__(self):
         """ DB Storage constructor """
@@ -43,14 +52,21 @@ class DBStorage:
 
     def all(self, cls=None):
         """ Returns all objects depending on the class name"""
-        Filtered_classes = {}
-        if cls is None:
-            
-            # _____This method is not finished yet._____ #
-            # _____This method is not finished yet._____ #
-            # _____This method is not finished yet._____ #
+        Filtered_classes = []
+        classes_obj = {}
 
-    
+        if cls is None:
+            for clas in classes_list.values():
+                Filtered_classes.extend(self.__session.query(clas).all())
+
+        elif cls != None and cls in classes_list.values():
+            Filtered_classes.extend(self.__session.query(cls).all)
+
+        for obj in Filtered_classes:
+            key = obj.__class__.__name__ + '.' + obj.id
+            classes_obj[key] = obj
+
+        return classes_obj
 
     def new(self, obj):
         """
@@ -71,3 +87,17 @@ class DBStorage:
         if obj is not None:
             self.__session.delete(obj)
 
+    def reload(self):
+        """
+        reload the data from database
+        """
+
+        Base.metadata.create_all(self.__engine)
+        sess_factory = sessionmaker(bind=self.__engine, expire_on_commit=False)
+        Session = scoped_session(sess_factory)
+        self.__session = Session
+
+    
+    def close(self):
+        """call remove() method on the private session attribute"""
+        self.__session.remove() 
