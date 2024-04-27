@@ -63,16 +63,29 @@ class HBNBCommand(cmd.Cmd):
         saves it (to the JSON file) and prints the id
         Usage: create <class name>
         """
+        if arg:
+            arguments = arg.split()
+            class_name = arguments.pop(0)
 
-        if not arg:
+        if not arg or not class_name:
             print("** class name missing **")
             return
-        if arg not in self.Classes_dict:
+        if class_name not in self.Classes_dict:
             print("** class doesn't exist **")
             return
 
-        if arg in self.Classes_dict.keys():
-            new_obj = self.Classes_dict[arg]()
+        if class_name in self.Classes_dict.keys():
+            new_obj = self.Classes_dict[class_name]() 
+            for argument in arguments:
+                attribute, value = argument.split('=')
+                if '"' in value:
+                    value = value.strip('"').replace('_', ' ')
+                else:
+                    try:
+                        value = int(value)
+                    except ValueError:
+                        value = float(value)
+                setattr(new_obj, attribute, value)
             new_obj.save()
             print("{}".format(new_obj.id))
 
