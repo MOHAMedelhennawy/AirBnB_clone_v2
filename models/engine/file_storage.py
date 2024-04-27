@@ -25,11 +25,18 @@ class FileStorage:
     __file_path = "file.json"
     __objects = {}
 
-    def all(self):
+    def all(self, cls=None):
         """
         returns the dictionary __objects
         """
-        return FileStorage.__objects
+        if cls:
+            req_data = {}
+            for k, v in self.__objects.items():
+                if isinstance(v, cls):
+                    req_data[k] = v
+            return req_data
+        else:
+            return FileStorage.__objects
 
     def new(self, obj):
         """
@@ -77,6 +84,6 @@ class FileStorage:
         to delete obj from __objects if it’s inside - if obj is equal to None,
         the method should not do anything
         """
-        if obj is None:
+        if obj is not None:
             key = "{}.{}".format(type(obj).__name__, obj.id)
             del FileStorage.__objects[key]
