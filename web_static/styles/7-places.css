@@ -1,0 +1,19 @@
+.Places
+{
+    text-align: center;
+}
+.Places h1{
+    font-size: 30px;
+}
+.Places article{
+    width: 390px;
+    padding: 20px;
+    margin: 20px;
+    border: 1px #FF5A5F solid;
+    border-radius: 4px;
+    display: inline-block;
+}
+.Places h2{
+    font-size: 30px;
+    align-items: center;
+}
