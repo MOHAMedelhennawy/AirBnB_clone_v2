@@ -64,6 +64,9 @@ class BaseModel:
         instance_dict["__class__"] = self.__class__.__name__
         instance_dict["created_at"] = self.created_at.isoformat()
         instance_dict["updated_at"] = self.updated_at.isoformat()
+        
+        if "_sa_instance_state" in instance_dict.keys():
+            del instance_dict["_sa_instance_state"]
         return instance_dict
 
     def delete(self):
