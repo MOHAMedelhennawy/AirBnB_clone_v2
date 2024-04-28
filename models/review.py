@@ -2,10 +2,11 @@
 """
 Review class, a subclass of BaseModel class
 """
-from models.base_model import BaseModel
+from sqlalchemy import Column, String, ForeignKey
+from models.base_model import BaseModel, Base
 
 
-class Review(BaseModel):
+class Review(BaseModel, Base):
     """
     A subclass of BaseModel class
     Public class attributes:
@@ -13,6 +14,12 @@ class Review(BaseModel):
         user_id:             (str) will be User.id
         text:                (str)
     """
-    place_id = ""
-    user_id = ""
-    text = ""
+    # place_id = ""
+    # user_id = ""
+    # text = ""
+
+    __tablename__ = ' reviews'
+    name = Column(String(60), nullable=False)
+    text = Column(String(1024), nullable=False)
+    place_id = Column(String(60), ForeignKey('places.id'), nullable=False)
+    user_id = Column(String(60), ForeignKey('user.id'), nullable=False)
