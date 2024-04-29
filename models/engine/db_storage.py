@@ -17,6 +17,9 @@ class DBStorage:
     __session = None
 
     def __init__(self):
+        """
+        values must be retrieved via environment variables
+        """
         mysql_user = os.environ.get("HBNB_MYSQL_USER")
         mysql_passwd = os.environ.get("HBNB_MYSQL_PWD")
         mysql_host = os.environ.get("HBNB_MYSQL_HOST")
@@ -77,8 +80,10 @@ class DBStorage:
             self.__session.delete(obj)
 
     def reload(self):
+        """
+        create all tables in the database
+        """
         Base.metadata.create_all(self.__engine)
-
         sess = sessionmaker(bind=self.__engine, expire_on_commit=False)
         Session = scoped_session(sess)
         self.__session = Session()

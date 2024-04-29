@@ -45,7 +45,6 @@ class BaseModel:
         obj_dict.pop("_sa_instance_state", None)
         return f"[{self.__class__.__name__}] ({self.id}) {obj_dict}"
 
-
     def save(self):
         '''
         updates the public instance attribute updated_at

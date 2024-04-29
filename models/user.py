@@ -4,17 +4,18 @@
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 from models.base_model import BaseModel, Base
-import json
 
 
 class User(BaseModel, Base):
-    '''subclass of BaseModel class'''
+    """
+    A subclass of BaseModel class
 
-    # email = ""
-    # password = ""
-    # first_name = ""
-    # last_name = ""
-
+    Public class attribute:
+    email (str): user email
+    password (str): user password
+    first_name (str): user first_name
+    last_name (str): user last_name
+    """
     __tablename__ = "users"
     email = Column(String(128), nullable=False)
     password = Column(String(128), nullable=False)

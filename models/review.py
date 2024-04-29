@@ -14,9 +14,6 @@ class Review(BaseModel, Base):
         user_id:             (str) will be User.id
         text:                (str)
     """
-    # place_id = ""
-    # user_id = ""
-    # text = ""
 
     __tablename__ = ' reviews'
     name = Column(String(60), nullable=False)

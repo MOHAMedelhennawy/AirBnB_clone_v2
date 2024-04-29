@@ -9,9 +9,13 @@ from models.state import State
 
 
 class City(BaseModel, Base):
+    """
+    A subclass of BaseModel class
+    Public class attributes:
+        state_id: (str) will be State.id
+        name:     (str)
+    """
     __tablename__ = 'cities'
-
     name = Column(String(128), nullable=False)
     state_id = Column(String(60), ForeignKey('states.id'), nullable=False)
-
     places = relationship('Place', backref='cities', cascade='all, delete')
