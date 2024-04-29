@@ -4,7 +4,7 @@ Place class, a subclass of BaseModel class
 """
 from sqlalchemy import Column, String, Integer, ForeignKey, Float
 from models.base_model import BaseModel, Base
-
+from sqlalchemy.orm import Relationship
 
 class Place(BaseModel, Base):
     """
@@ -45,4 +45,5 @@ class Place(BaseModel, Base):
     price_by_night = Column(Integer, nullable=False, default=0)
     latitude = Column(Float, nullable=False)
     longitude = Column(Float, nullable=False)
-    
+
+    reviews = Relationship('Review', backref='place', cascade='all, delete')
