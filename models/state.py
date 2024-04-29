@@ -4,8 +4,9 @@ State class, a subclass of BaseModel
 """
 from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String, ForeignKey
-from sqlalchemy.orm import Relationship
+from sqlalchemy.orm import relationship
 from models.engine import file_storage
+
 
 class State(BaseModel, Base):
     """
@@ -19,7 +20,7 @@ class State(BaseModel, Base):
 
     __tablename__ = "states"
     name = Column(String(128), nullable=False)
-    cities = Relationship('City', backref='state', cascade='all, delete')
+    cities = relationship('City', backref='state', cascade='all, delete')
 
     @property
     def cities(self):

@@ -4,7 +4,8 @@ Place class, a subclass of BaseModel class
 """
 from sqlalchemy import Column, String, Integer, ForeignKey, Float
 from models.base_model import BaseModel, Base
-from sqlalchemy.orm import Relationship
+from sqlalchemy.orm import relationship
+
 
 class Place(BaseModel, Base):
     """
@@ -35,8 +36,8 @@ class Place(BaseModel, Base):
     # amenity_ids = []
 
     __tablename__ = "places"
-    city_id = Column(String(60),ForeignKey('cities.id') , nullable=False)
-    user_id = Column(String(60),ForeignKey('users.id') , nullable=False)
+    city_id = Column(String(60), ForeignKey('cities.id'), nullable=False)
+    user_id = Column(String(60), ForeignKey('users.id'), nullable=False)
     name = Column(String(128), nullable=False)
     description = Column(String(1024), nullable=False)
     number_rooms = Column(Integer, nullable=False, default=0)
@@ -46,4 +47,4 @@ class Place(BaseModel, Base):
     latitude = Column(Float, nullable=False)
     longitude = Column(Float, nullable=False)
 
-    reviews = Relationship('Review', backref='place', cascade='all, delete')
+    reviews = relationship('Review', backref='place', cascade='all, delete')
