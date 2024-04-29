@@ -5,6 +5,7 @@ Place class, a subclass of BaseModel class
 from sqlalchemy import Column, String, Integer, ForeignKey, Float
 from models.base_model import BaseModel, Base
 from sqlalchemy.orm import relationship
+from models.engine import file_storage
 
 
 class Place(BaseModel, Base):
@@ -37,3 +38,8 @@ class Place(BaseModel, Base):
     longitude = Column(Float, nullable=False)
 
     reviews = relationship('Review', backref='place', cascade='all, delete')
+
+    @property
+    def reviews(self):
+        all_reviews = file_storage.FileStorage.all(self)
+        return all_reviews
