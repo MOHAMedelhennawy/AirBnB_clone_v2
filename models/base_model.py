@@ -41,8 +41,10 @@ class BaseModel:
         '''
         Return the informal presentation of class
         '''
+        obj_dict = self.__dict__.copy()
+        obj_dict.pop("_sa_instance_state", None)
+        return f"[{self.__class__.__name__}] ({self.id}) {obj_dict}"
 
-        return f"[{self.__class__.__name__}] ({self.id}) {self.__dict__}"
 
     def save(self):
         '''
