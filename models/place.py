@@ -48,9 +48,12 @@ class Place(BaseModel, Base):
 
     @property
     def reviews(self):
-        # all_reviews = file_storage.FileStorage.all(self)
-        # return all_reviews
-        ...
+        """
+        reviews method
+        """
+        all_reviews = file_storage.FileStorage.all(self)
+        return all_reviews
+
     @property
     def amenities(self):
         """
@@ -58,14 +61,12 @@ class Place(BaseModel, Base):
         on the attribute amenity_ids that contains
         all Amenity.id
         """
-        # return self.amenity_ids
-        ...
+        return self.amenity_ids
     
     @amenities.setter
     def amenities(self, obj=None):
         """
         method for adding an Amenity.id to the attribute amenity_ids
         """
-        # if isinstance(obj, Amenity) and self.id == obj.id:
-        #     self.amenity_ids.append(obj.id)
-        ...
+        if isinstance(obj, Amenity) and self.id == obj.id:
+            self.amenity_ids.append(obj.id)
