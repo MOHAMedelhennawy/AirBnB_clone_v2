@@ -12,6 +12,9 @@ import models
 from models import storage
 from models.engine.file_storage import FileStorage
 from models.base_model import BaseModel
+from models.state import State
+from models.city import City
+from models.user import User
 
 
 class TestFileStorage(unittest.TestCase):
@@ -35,7 +38,7 @@ class TestFileStorage(unittest.TestCase):
         self.assertIsInstance(storage, FileStorage)
         with self.assertRaises(TypeError) as Err_msg:
             obj_Test = FileStorage("This arg")
-
+    
     def test_deleted_file(self):
         """
         Test that file deleted successfully
@@ -56,12 +59,50 @@ class TestFileStorage(unittest.TestCase):
         """
         Test all method
         """
-        all_objs = storage.all()
+        fs = FileStorage()
+        all_objs = fs.all()
         self.assertEqual(all_objs, {})
         self.assertIsInstance(all_objs, dict)
         self.assertFalse(os.path.exists("file.json"))
-        with self.assertRaises(TypeError) as msg:
-            all_objs = storage.all("This arg")
+        self.assertEqual(len(all_objs), 0)
+
+        # Create a new State
+        new_state = State()
+        new_state.name = "California"
+        fs.new(new_state)
+        fs.save()
+        all_states = fs.all(State)
+        all_objects = fs.all()
+        self.assertEqual(len(all_states), 1)
+        self.assertEqual(len(all_objects), 1)
+
+        another_state = State()
+        another_state.name = "Nevada"
+        fs.new(another_state)
+        fs.save()
+        all_states = fs.all(State)
+        all_objects = fs.all()
+        self.assertEqual(len(all_states), 2)
+        self.assertEqual(len(all_objects), 2)
+
+        new_city = City()
+        new_city.name = "San_Francisco"
+        fs.new(new_city)
+        fs.save()
+        all_cities = fs.all(City)
+        all_objects = fs.all()
+        self.assertEqual(len(all_cities), 1)
+        self.assertEqual(len(all_objects), 3)
+
+        new_user = User()
+        new_user.first_name = "Guillaume"
+        new_user.last_name = "Snow"
+        fs.new(new_user)
+        fs.save()
+        all_users = fs.all(User)
+        all_objects = fs.all()
+        self.assertEqual(len(all_users), 1)
+        self.assertEqual(len(all_objects), 4)
 
     def test_save(self):
         """
@@ -120,6 +161,35 @@ class TestFileStorage(unittest.TestCase):
         with self.assertRaises(TypeError):
             models.storage.reload(None)
 
+    def test_delete(self):
+        """
+        Test delete methode
+        """
+
+        fs = FileStorage()
+        all_states = fs.all(State)
+        self.assertEqual(len(all_states), 0)
+
+        # Create a new State
+        new_state = State()
+        new_state.name = "California"
+        fs.new(new_state)
+        fs.save()
+        all_states = fs.all(State)
+        self.assertEqual(len(all_states), 1)
+
+        # Create another State
+        another_state = State()
+        another_state.name = "Nevada"
+        fs.new(another_state)
+        fs.save()
+        all_states = fs.all(State)
+        self.assertEqual(len(all_states), 2)
+
+        # Delete state object
+        fs.delete(new_state)
+        all_states = fs.all(State)
+        self.assertEqual(len(all_states), 1)
 
 if __name__ == '__main__':
     unittest.main()

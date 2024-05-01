@@ -8,7 +8,9 @@ from unittest.mock import patch
 from io import StringIO
 from console import HBNBCommand
 import uuid
-
+from models.engine.file_storage import FileStorage
+from models.state import State
+from models.place import Place
 
 class TestHBNBCommand(unittest.TestCase):
     """
@@ -72,6 +74,53 @@ class TestHBNBCommand(unittest.TestCase):
             HBNBCommand().onecmd(input)
             out = output.getvalue().strip()
             self.assertTrue(uuid.UUID(out, version=4))
+
+        with patch('sys.stdout', new=StringIO()) as output:
+            input = 'create State name="California"'
+            HBNBCommand().onecmd(input)
+            output_id = output.getvalue().strip() # id
+            self.assertTrue(uuid.UUID(output_id, version=4))
+            
+            state = FileStorage.all(State)["State." + output_id]
+            self.assertEqual(output_id, state.id)
+            self.assertEqual(state.name, "California")
+            self.assertTrue(state.created_at)
+            self.assertTrue(state.updated_at)
+            self.assertIsInstance(state, State)
+
+        with patch('sys.stdout', new=StringIO()) as output:
+            input = 'create Place city_id="0001" user_id="0001" name="My_little_house" \
+                     number_rooms=4 number_bathrooms=2 max_guest=10 price_by_night=300 \
+                     latitude=37.773972 longitude=-122.431297'
+            
+            HBNBCommand().onecmd(input)
+            output_id = output.getvalue().strip() # id
+            self.assertTrue(uuid.UUID(output_id, version=4))
+
+            place = FileStorage.all(Place)["Place." +  output_id]
+            self.assertIsInstance(place, Place)
+            self.assertEqual(place.id, output_id)
+            self.assertEqual(place.name, 'My little house')
+            self.assertIsInstance(place.name, str)
+            self.assertEqual(place.number_rooms, 4)
+            self.assertIsInstance(place.number_rooms, int)
+            self.assertEqual(place.number_bathrooms, 2)
+            self.assertIsInstance(place.number_bathrooms, int)
+            self.assertEqual(place.max_guest, 10)
+            self.assertIsInstance(place.max_guest, int)
+            self.assertEqual(place.price_by_night, 300)
+            self.assertIsInstance(place.price_by_night, int)
+            self.assertEqual(place.city_id, "0001")
+            self.assertIsInstance(place.city_id, str)
+            self.assertEqual(place.user_id, "0001")
+            self.assertIsInstance(place.user_id, str)
+            self.assertEqual(place.latitude, 37.773972)
+            self.assertIsInstance(place.latitude, float)
+            self.assertEqual(place.longitude, -122.431297)
+            self.assertIsInstance(place.longitude, float)
+
+
+
 
     def test_show(self):
         """
