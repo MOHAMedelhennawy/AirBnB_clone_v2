@@ -1,9 +1,15 @@
 #!/usr/bin/python3
 """ Test link Many-To-Many Place <> Amenity
 """
-from models import *
+from models.state import State
+from models.amenity import Amenity
+from models.place import Place
+from models.user import User
+from models.city import City
+from models.engine import file_storage
 
 # creation of a State
+print("start program")
 state = State(name="California")
 state.save()
 
@@ -11,7 +17,7 @@ state.save()
 city = City(state_id=state.id, name="San Francisco")
 city.save()
 
-# creation of a User
+# # creation of a User
 user = User(email="john@snow.com", password="johnpwd")
 user.save()
 
@@ -38,6 +44,7 @@ place_2.amenities.append(amenity_1)
 place_2.amenities.append(amenity_2)
 place_2.amenities.append(amenity_3)
 
+storage = file_storage.FileStorage
 storage.save()
 
 print("OK")
