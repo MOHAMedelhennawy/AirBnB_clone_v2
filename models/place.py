@@ -5,14 +5,21 @@ Place class, a subclass of BaseModel class
 from sqlalchemy import Column, String, Integer, ForeignKey, Float, Table
 from models.base_model import BaseModel, Base
 from sqlalchemy.orm import relationship
-from models.engine import file_storage
-from models.amenity import Amenity
+import os 
+
 place_amenity = Table(
     'place_amenity',
     Base.metadata,
-    Column('place_id', String(60), ForeignKey('places.id'), primary_key=True, nullable=False),
-    Column('amenity_id', String(60), ForeignKey('amenities.id'), primary_key=True, nullable=False)
+    Column('place_id', String(60),
+           ForeignKey('places.id'),
+           primary_key=True, nullable=False),
+
+    Column('amenity_id', String(60),
+           ForeignKey('amenities.id'),
+           primary_key=True, nullable=False)
                       )
+
+
 class Place(BaseModel, Base):
     """
     A subclass of BaseModel class
@@ -43,14 +50,27 @@ class Place(BaseModel, Base):
     longitude = Column(Float)
     amenity_ids = []
 
-    reviews = relationship('Review', backref='place', cascade='all, delete')
-    amenities = relationship('Amenity', backref='place', secondary='place_amenity', viewonly=False)
+    if os.getenv('HBNB_TYPE_STORAGE') == 'db':
+        reviews = relationship(
+            'Review',
+            backref='place',
+            cascade='all, delete'
+            )
+
+        amenities = relationship(
+            'Amenity',
+            backref='place',
+            secondary='place_amenity',
+            viewonly=False
+            )
 
     @property
     def reviews(self):
         """
         reviews method
         """
+        from models.engine import file_storage
+
         all_reviews = file_storage.FileStorage.all(self)
         return all_reviews
 
@@ -61,12 +81,15 @@ class Place(BaseModel, Base):
         on the attribute amenity_ids that contains
         all Amenity.id
         """
-        return self.amenity_ids
-    
+        # return self.amenity_ids
+        ...
+
     @amenities.setter
     def amenities(self, obj=None):
         """
         method for adding an Amenity.id to the attribute amenity_ids
         """
-        if isinstance(obj, Amenity) and self.id == obj.id:
+        from models.amenity import Amenity
+
+        if isinstance(obj, Amenity):
             self.amenity_ids.append(obj.id)
