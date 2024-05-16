@@ -21,7 +21,8 @@ SYMLINK="/data/web_static/current"
 sudo ln -sf /data/web_static/releases/test/ "$SYMLINK"
 sudo chown -hR ubuntu:ubuntu /data/
 
-NEW_STRING="server_name _;\n\n\tlocation /hbnb_static {\n\t\talias /data/web_static/current/;\n\t}"
-FILE_PATH=/etc/nginx/sites-available/default
-sudo sed -i "s|server_name _;|${NEW_STRING}|g" $FILE_PATH
+# NEW_STRING="server_name _;\n\n\tlocation /hbnb_static {\n\t\talias /data/web_static/current/;\n\t}"
+# FILE_PATH=/etc/nginx/sites-available/default
+# sudo sed -i "s|server_name _;|${NEW_STRING}|g" $FILE_PATH
+sed -i '51 i \\n\tlocation /hbnb_static {\n\talias /data/web_static/current;\n\t}' /etc/nginx/sites-available/default
 sudo service nginx restart
