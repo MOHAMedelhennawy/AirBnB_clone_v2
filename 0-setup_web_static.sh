@@ -4,8 +4,9 @@
 sudo apt-get update
 sudo apt-get install -y nginx
 
-sudo mkdir -p /data/web_static/{releases/test,shared}
-
+# sudo mkdir -p /data/web_static/{releases/test,shared}
+mkdir -p /data/web_static/releases/test/
+mkdir -p /data/web_static/shared/
 FILE="/data/web_static/releases/test/index.html"
 sudo tee "$FILE" > /dev/null <<EOF
 <html>
@@ -21,8 +22,7 @@ SYMLINK="/data/web_static/current"
 sudo ln -sf /data/web_static/releases/test/ "$SYMLINK"
 sudo chown -hR ubuntu:ubuntu /data/
 
-# NEW_STRING="server_name _;\n\n\tlocation /hbnb_static {\n\t\talias /data/web_static/current/;\n\t}"
-# FILE_PATH=/etc/nginx/sites-available/default
-# sudo sed -i "s|server_name _;|${NEW_STRING}|g" $FILE_PATH
-sed -i '51 i \\n\tlocation /hbnb_static {\n\talias /data/web_static/current;\n\t}' /etc/nginx/sites-available/default
+NEW_STRING="server_name _;\n\n\tlocation /hbnb_static {\n\t\talias /data/web_static/current/;\n\t}"
+FILE_PATH=/etc/nginx/sites-available/default
+sudo sed -i "s|server_name _;|${NEW_STRING}|g" $FILE_PATH
 sudo service nginx restart
