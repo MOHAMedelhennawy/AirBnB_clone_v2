@@ -19,7 +19,7 @@ EOF
 
 SYMLINK="/data/web_static/current"
 sudo ln -sf /data/web_static/releases/test/ "$SYMLINK"
-sudo chown -hR ubuntu: /data/
+sudo chown -hR ubuntu:ubuntu /data/
 
 NEW_STRING="server_name _;\n\n\tlocation /hbnb_static {\n\t\talias /data/web_static/current/;\n\t}"
 FILE_PATH=/etc/nginx/sites-available/default
