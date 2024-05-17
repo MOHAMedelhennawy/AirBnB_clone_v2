@@ -31,7 +31,7 @@ def do_deploy(archive_path):
         return False
 
     # file_name = archive_path.split("/")[-1].strip(".tgz")
-    file_name = path.basename(archive_path).split('.')[0]
+    file_name = path.basename(archive_path)
     no_exc = file_name.split('.')[0]
     uncompress_path = "/data/web_static/releases/{}".format(no_exc)
 
