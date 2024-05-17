@@ -36,9 +36,10 @@ def do_deploy(archive_path):
         upload = put(archive_path, tmp_path)
         sudo("mkdir -p {}".format(uncompress_path))
         sudo("tar -xvzf {}{} -C {}".format(tmp_path, archive_path, uncompress_path))
-        sudo("rm -r {}{}".format(tmp_path, archive_path)
-        sudo("unlink /data/web_static/current")
-        sudo("ln -s /data/web_static/current {}".format(uncompress_path))
+        sudo("rm -r {}{}".format(tmp_path, archive_path))
+        sudo("rm -f /data/web_static/current")
+        sudo("ln -s {} /data/web_static/current".format(uncompress_path))
         return True
     else:
         return False
+
