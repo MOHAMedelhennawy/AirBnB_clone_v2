@@ -4,35 +4,27 @@ Fabric script based on the file 1-pack_web_static.py that distributes an
 archive to the web servers
 """
 
-from fabric.api import local, put, sudo, run, env
-from datetime import datetime
-from os import path, makedirs
+from fabric.api import put, run, env
+from os.path import exists
+env.hosts = ['100.25.48.160', '100.26.210.165']
 
-
-env.hosts = ['100.26.210.165', '100.25.48.160']
-env.user = 'ubuntu'
 
 def do_deploy(archive_path):
-    """ Fabric script that distributes an archive to your web servers """
-
-    if not path.exists(archive_path):
+    """distributes an archive to the web servers"""
+    if exists(archive_path) is False:
         return False
-
-    # file_name = archive_path.split("/")[-1].strip(".tgz")
-    file_name = path.basename(archive_path)
-    no_exc = file_name.split('.')[0]
-    uncompress_path = "/data/web_static/releases/{}".format(no_exc)
-
-    tmp_path = '/tmp/{}'.format(file_name)
     try:
-        upload = put(archive_path, tmp_path)
-        sudo("mkdir -p {}".format(uncompress_path))
-        sudo("tar -xvzf {} -C {}".format(tmp_path, uncompress_path))
-        sudo("rm {}".format(tmp_path))
-        sudo("mv {0}/web_static/* {0}/".format(uncompress_path))
-        sudo("rm -rf {}/web_static".format(uncompress_path))
-        sudo("rm -f /data/web_static/current")
-        sudo("ln -s {} /data/web_static/current".format(uncompress_path))
+        file_n = archive_path.split("/")[-1]
+        no_ext = file_n.split(".")[0]
+        path = "/data/web_static/releases/"
+        put(archive_path, '/tmp/')
+        run('mkdir -p {}{}/'.format(path, no_ext))
+        run('tar -xzf /tmp/{} -C {}{}/'.format(file_n, path, no_ext))
+        run('rm /tmp/{}'.format(file_n))
+        run('mv {0}{1}/web_static/* {0}{1}/'.format(path, no_ext))
+        run('rm -rf {}{}/web_static'.format(path, no_ext))
+        run('rm -rf /data/web_static/current')
+        run('ln -s {}{}/ /data/web_static/current'.format(path, no_ext))
         return True
     except:
         return False
