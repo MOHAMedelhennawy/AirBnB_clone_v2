@@ -26,26 +26,22 @@ def do_pack():
 
 def do_deploy(archive_path):
     """ Fabric script that distributes an archive to your web servers """
-    if not path.exists(archive_pat):
+
+    if not path.exists(archive_path):
         return False
 
     # file_name = archive_path.split("/")[-1].strip(".tgz")
+    file_name = path.basename(archive_path).split('.')[0]
+    uncompress_path = "/data/web_static/releases/{}".format(file_name)
+
+    tmp_path = '/tmp/'
     try:
-        file_name = path.basename(archive_path).split('.')[0] # web_static_20170315003959
-        uncompress_path = "/data/web_static/releases/{}".format(file_name) # /data/web_static/releases/web_static_201703
-
-        tmp_path = '/tmp/{}'.format(file_name)
-        release_path = "/data/web_static/releases/{}/".format(file_name)
-
-        upload = put(archive_path, '/tmp/') # /tmp/versions/web_static_20170315003959.tgz
-        sudo("mkdir -p {}".format(release_path)) # create /data/web_static/releases/web_static_20170315003959
-        sudo("tar -xvzf {} -C {}".format(tmp_path, release_path))
-        sudo("rm -r {}".format(tmp_path))
-        sudo("rm -rf {}web_static".format(release_path)
+        upload = put(archive_path, tmp_path)
+        sudo("mkdir -p {}".format(uncompress_path))
+        sudo("tar -xvzf {}{} -C {}".format(tmp_path, archive_path, uncompress_path))
+        sudo("rm -r {}{}".format(tmp_path, archive_path))
         sudo("rm -f /data/web_static/current")
         sudo("ln -s {} /data/web_static/current".format(uncompress_path))
         return True
-
     except:
         return False
-
