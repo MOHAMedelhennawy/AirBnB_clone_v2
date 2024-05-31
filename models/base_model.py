@@ -8,7 +8,7 @@ from datetime import datetime
 import models
 from sqlalchemy.orm import declarative_base
 from sqlalchemy import Column, String, DateTime
-
+import os
 
 Base = declarative_base()
 
@@ -17,25 +17,33 @@ class BaseModel:
     '''
     BaseModel that defines all common attributes/methods for other classes
     '''
-    id = Column(String(60), primary_key=True, nullable=False, unique=True)
-    created_at = Column(DateTime(), nullable=False, default=datetime.utcnow)
-    updated_at = Column(DateTime(), nullable=False, default=datetime.utcnow)
+
+    id = Column(String(60), primary_key=True, nullable=False)
+    created_at = Column(DateTime(), nullable=False, default=datetime.utcnow())
+    updated_at = Column(DateTime(), nullable=False, default=datetime.utcnow())
+
 
     def __init__(self, *args, **kwargs):
-        '''
-        the initialization method of attributes
-        '''
+        """Initialization of the base model"""
         format = "%Y-%m-%dT%H:%M:%S.%f"
-        if not kwargs:
-            self.id = str(uuid4())
-            self.created_at = datetime.now()
-            self.updated_at = datetime.now()
-        else:
+        if kwargs:
             for key, value in kwargs.items():
                 if key != "__class__":
-                    if key in ["created_at", "updated_at"]:
-                        value = datetime.strptime(value, format)
                     setattr(self, key, value)
+            if kwargs.get("created_at", None) and type(self.created_at) is str:
+                self.created_at = datetime.strptime(kwargs["created_at"], format)
+            else:
+                self.created_at = datetime.utcnow()
+            if kwargs.get("updated_at", None) and type(self.updated_at) is str:
+                self.updated_at = datetime.strptime(kwargs["updated_at"], format)
+            else:
+                self.updated_at = datetime.utcnow()
+            if kwargs.get("id", None) is None:
+                self.id = str(uuid4())
+        else:
+            self.id = str(uuid4())
+            self.created_at = datetime.utcnow()
+            self.updated_at = self.created_at
 
     def __str__(self):
         '''
@@ -63,8 +71,10 @@ class BaseModel:
 
         instance_dict = self.__dict__.copy()
         instance_dict["__class__"] = self.__class__.__name__
-        instance_dict["created_at"] = self.created_at.isoformat()
-        instance_dict["updated_at"] = self.updated_at.isoformat()
+        if "created_at" in instance_dict:
+            instance_dict["created_at"] = self.created_at.isoformat()
+        if "updated_at" in instance_dict:
+            instance_dict["updated_at"] = self.updated_at.isoformat()
 
         if "_sa_instance_state" in instance_dict.keys():
             del instance_dict["_sa_instance_state"]
