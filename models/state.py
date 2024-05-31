@@ -6,7 +6,7 @@ from models.base_model import BaseModel, Base
 from models.city import City
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
-
+import os
 
 class State(BaseModel, Base):
     """
@@ -20,15 +20,16 @@ class State(BaseModel, Base):
     cities = relationship('City', backref='state', cascade='all, delete')
 
 
-    @property
-    def cities(self):
-        """
-        Returns the list of City instances with state_id equals to the current State.id
-        """
-        from models.engine import file_storage
-        cities_list = []
-        all_cities = file_storage.FileStorage.all(City)
-        for city in all_cities.values():
-            if isinstance(city, City) and city.state_id == self.id:
-                    cities_list.append(city)
-        return cities_list
+    if os.getenv('HBNB_TYPE_STORAGE') == 'db':
+        @property   
+        def cities(self):
+            """
+            Returns the list of City instances with state_id equals to the current State.id
+            """
+            from models.engine import file_storage
+            cities_list = []
+            all_cities = file_storage.FileStorage.all(City)
+            for city in all_cities.values():
+                if isinstance(city, City) and city.state_id == self.id:
+                        cities_list.append(city)
+            return cities_list

@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 """
+Module that contain DBStorage class
 """
 import os
 from sqlalchemy.orm import scoped_session

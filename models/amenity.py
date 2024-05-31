@@ -3,8 +3,10 @@
 Amenity class, a subclass of BaseModel
 """
 from models.base_model import BaseModel, Base
-from sqlalchemy import Column, String, Table, ForeignKey
+from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
+
+
 class Amenity(BaseModel, Base):
     """
     A subclass of BaseModel class
