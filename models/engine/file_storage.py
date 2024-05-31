@@ -2,6 +2,8 @@
 """
 Module that contain FileStorage class
 """
+
+
 import json
 from os import path
 from models.base_model import BaseModel
@@ -89,10 +91,9 @@ class FileStorage:
             key = "{}.{}".format(type(obj).__name__, obj.id)
             del FileStorage.__objects[key]
 
-
     def close(self):
         """sumary_line
-        
+
         Keyword arguments:
         argument -- description
         Return: return_description

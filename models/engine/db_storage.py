@@ -53,7 +53,7 @@ class DBStorage:
             filtered_query = self.__session.query(cls).all()
         else:
             for clas in classes:
-                filtered_query.extend(self.__session.query(clas).all())            
+                filtered_query.extend(self.__session.query(clas).all())
 
         for query in filtered_query:
             key = type(query).__name__ + '.' + query.id
@@ -91,10 +91,10 @@ class DBStorage:
         sess = sessionmaker(bind=self.__engine, expire_on_commit=False)
         Session = scoped_session(sess)
         self.__session = Session
-    
+
     def close(self):
         """sumary_line
-        
+
         Keyword arguments:
         argument -- description
         Return: return_description
