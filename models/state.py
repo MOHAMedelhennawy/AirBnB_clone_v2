@@ -3,9 +3,9 @@
 State class, a subclass of BaseModel
 """
 from models.base_model import BaseModel, Base
-from sqlalchemy import Column, String, ForeignKey
+from models.city import City
+from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
-from models.engine import file_storage
 
 
 class State(BaseModel, Base):
@@ -15,12 +15,20 @@ class State(BaseModel, Base):
     Public class attribute:
     name (str): state name
     """
-
     __tablename__ = "states"
     name = Column(String(128), nullable=False)
     cities = relationship('City', backref='state', cascade='all, delete')
 
+
     @property
     def cities(self):
-        all_cities = file_storage.FileStorage.all(self)
-        return all_cities
+        """
+        Returns the list of City instances with state_id equals to the current State.id
+        """
+        from models.engine import file_storage
+        cities_list = []
+        all_cities = file_storage.FileStorage.all(City)
+        for city in all_cities.values():
+            if isinstance(city, City) and city.state_id == self.id:
+                    cities_list.append(city)
+        return cities_list

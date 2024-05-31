@@ -1,4 +1,6 @@
 #!/usr/bin/python3
+"""
+"""
 import os
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm import sessionmaker
@@ -13,6 +15,10 @@ from models.user import User
 
 
 class DBStorage:
+    """
+    To manibulate in database
+    """
+
     __engine = None
     __session = None
 
@@ -40,15 +46,13 @@ class DBStorage:
         """
 
         DBStorage_dict = {}
+        filtered_query = []
+        classes = [City, State, User, Place, Review, Amenity]
         if cls:
             filtered_query = self.__session.query(cls).all()
         else:
-            filtered_query = self.__session.query(State).all()
-            filtered_query.extend(self.__session.query(City).all())
-            filtered_query.extend(self.__session.query(User).all())
-            filtered_query.extend(self.__session.query(Place).all())
-            filtered_query.extend(self.__session.query(Review).all())
-            # filtered_query.extend(self.__session.query(Amenity).all())
+            for clas in classes:
+                filtered_query.extend(self.__session.query(clas).all())            
 
         for query in filtered_query:
             key = type(query).__name__ + '.' + query.id
@@ -62,7 +66,6 @@ class DBStorage:
         """
 
         self.__session.add(obj)
-        self.save()
 
     def save(self):
         """
@@ -86,4 +89,13 @@ class DBStorage:
         Base.metadata.create_all(self.__engine)
         sess = sessionmaker(bind=self.__engine, expire_on_commit=False)
         Session = scoped_session(sess)
-        self.__session = Session()
+        self.__session = Session
+    
+    def close(self):
+        """sumary_line
+        
+        Keyword arguments:
+        argument -- description
+        Return: return_description
+        """
+        self.__session.remove()

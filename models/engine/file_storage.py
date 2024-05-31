@@ -76,6 +76,7 @@ class FileStorage:
                 cls_name = obj_dict['__class__']
                 cls_name = cls[cls_name]
                 self.new(cls_name(**obj_dict))
+
         except FileNotFoundError:
             pass
 
@@ -87,3 +88,13 @@ class FileStorage:
         if obj is not None:
             key = "{}.{}".format(type(obj).__name__, obj.id)
             del FileStorage.__objects[key]
+
+
+    def close(self):
+        """sumary_line
+        
+        Keyword arguments:
+        argument -- description
+        Return: return_description
+        """
+        self.reload()
