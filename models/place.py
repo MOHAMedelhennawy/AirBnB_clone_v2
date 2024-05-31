@@ -70,9 +70,14 @@ class Place(BaseModel, Base):
         reviews method
         """
         from models.engine import file_storage
+        from models.review import Review
 
-        all_reviews = file_storage.FileStorage.all(self)
-        return all_reviews
+        review_list = []
+        all_reviews = file_storage.FileStorage.all(Review)
+        for review in all_reviews.values():
+            if isinstance(review, Review) and review.place_id == self.id:
+                review_list.append(review)
+        return review_list
 
     @property
     def amenities(self):
@@ -81,8 +86,14 @@ class Place(BaseModel, Base):
         on the attribute amenity_ids that contains
         all Amenity.id
         """
-        # return self.amenity_ids
-        ...
+        from models.engine import file_storage
+        from models.amenity import Amenity
+        amenity_list = []
+        all_amenitys = file_storage.FileStorage.all(Amenity)
+        for amenity in all_amenitys.values():
+            if isinstance(amenity, Amenity) and amenity.place_id == self.id:
+                amenity_list.append(amenity)
+        return amenity_list
 
     @amenities.setter
     def amenities(self, obj=None):
@@ -90,6 +101,5 @@ class Place(BaseModel, Base):
         method for adding an Amenity.id to the attribute amenity_ids
         """
         from models.amenity import Amenity
-
         if isinstance(obj, Amenity):
             self.amenity_ids.append(obj.id)
