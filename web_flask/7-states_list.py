@@ -17,9 +17,8 @@ def dispose(exception):
 @app.route('/states_list')
 def states():
     """ Display list of all the states """
-    states = storage.all(State)
-    states_list = list(states.values())
-    return render_template('7-states_list.html', states=states_list)
+    states = list(storage.all(State))
+    return render_template('7-states_list.html', states=states)
 
 
 if __name__ == '__main__':
