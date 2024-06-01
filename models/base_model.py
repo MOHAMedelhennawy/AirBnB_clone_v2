@@ -11,28 +11,31 @@ from sqlalchemy import Column, String, DateTime
 import os
 
 Base = declarative_base()
-time = "%Y-%m-%dT%H:%M:%S.%f"
 
 
 class BaseModel:
-    """The BaseModel class from which future classes will be derived"""
-    if models.storage_t == "db":
-        id = Column(String(60), primary_key=True)
-        created_at = Column(DateTime, default=datetime.utcnow)
-        updated_at = Column(DateTime, default=datetime.utcnow)
+    '''
+    BaseModel that defines all common attributes/methods for other classes
+    '''
+
+    id = Column(String(60), primary_key=True, nullable=False)
+    created_at = Column(DateTime(), nullable=False, default=datetime.utcnow())
+    updated_at = Column(DateTime(), nullable=False, default=datetime.utcnow())
+
 
     def __init__(self, *args, **kwargs):
         """Initialization of the base model"""
+        format = "%Y-%m-%dT%H:%M:%S.%f"
         if kwargs:
             for key, value in kwargs.items():
                 if key != "__class__":
                     setattr(self, key, value)
             if kwargs.get("created_at", None) and type(self.created_at) is str:
-                self.created_at = datetime.strptime(kwargs["created_at"], time)
+                self.created_at = datetime.strptime(kwargs["created_at"], format)
             else:
                 self.created_at = datetime.utcnow()
             if kwargs.get("updated_at", None) and type(self.updated_at) is str:
-                self.updated_at = datetime.strptime(kwargs["updated_at"], time)
+                self.updated_at = datetime.strptime(kwargs["updated_at"], format)
             else:
                 self.updated_at = datetime.utcnow()
             if kwargs.get("id", None) is None:
