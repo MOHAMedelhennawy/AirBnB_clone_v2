@@ -99,4 +99,4 @@ class DBStorage:
         argument -- description
         Return: return_description
         """
-        self.__session.remove()
+        self.__session.close()
