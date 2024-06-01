@@ -17,10 +17,17 @@ class State(BaseModel, Base):
 
     Public class attribute:
     name (str): state name
-    """
-    __tablename__ = "states"
-    name = Column(String(128), nullable=False)
-    cities = relationship('City', backref='state', cascade='all, delete')
+    """ 
+    if os.getenv('HBNB_TYPE_STORAGE') == 'db':
+        __tablename__ = "states"
+        name = Column(String(128), nullable=False)
+        cities = relationship('City', backref='state', cascade='all, delete')
+    else:
+        name = ''
+
+    def __init__(self, *args, **kwargs):
+        """initializes state"""
+        super().__init__(*args, **kwargs)
 
     if os.getenv('HBNB_TYPE_STORAGE') != 'db':
         @property
