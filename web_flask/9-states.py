@@ -1,4 +1,3 @@
-
 #!/usr/bin/python3
 """ Starts a Flask web app """
 from flask import Flask, render_template
@@ -25,12 +24,11 @@ def states():
 @app.route('/states/<id>')
 def statesWithID(id):
     """ Display list of all the states """
-    
     for state in storage.all(State).values():
         if state.id == id:
             return render_template('9-states.html', state=state)
     return render_template('9-states.html')
-    
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
